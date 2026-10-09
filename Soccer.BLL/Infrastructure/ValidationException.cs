@@ -1,11 +1,6 @@
-﻿namespace Soccer.BLL.Infrastructure
+﻿namespace Soccer.BLL.Infrastructure;
+
+public class ValidationException(string message, string prop) : Exception(message)
 {
-    public class ValidationException : Exception
-    {
-        public string Property { get; protected set; }
-        public ValidationException(string message, string prop) : base(message)
-        {
-            Property = prop;
-        }
-    }
+    public string Property { get; protected set; } = prop;
 }

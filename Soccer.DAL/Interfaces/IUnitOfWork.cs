@@ -1,11 +1,10 @@
 ﻿using Soccer.DAL.Entities;
 
-namespace Soccer.DAL.Interfaces
+namespace Soccer.DAL.Interfaces;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        IRepository<Team> Teams { get; }
-        IRepository<Player> Players { get; }
-        Task Save();
-    }
+    IRepository<Team> Teams { get; }
+    IRepository<Player> Players { get; }
+    Task Save();
 }

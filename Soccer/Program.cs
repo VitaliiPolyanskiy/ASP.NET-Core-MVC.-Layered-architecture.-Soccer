@@ -1,24 +1,27 @@
-using Microsoft.EntityFrameworkCore;
 using Soccer.BLL.Interfaces;
 using Soccer.BLL.Services;
 using Soccer.BLL.Infrastructure;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Получаем строку подключения из файла конфигурации
+// Отримуємо рядок підключення з файлу конфігурації
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddSoccerContext(connection);
+if (connection != null)
+{
+    builder.Services.AddSoccerContext(connection);
+}
+
 builder.Services.AddUnitOfWorkService();
 builder.Services.AddTransient<ITeamService, TeamService>();
 builder.Services.AddTransient<IPlayerService, PlayerService>();
+builder.Services.AddSoccerAutoMapper();
 
-// Добавляем сервисы MVC
+// Додаємо сервіси MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.UseStaticFiles(); // обрабатывает запросы к файлам в папке wwwroot
+app.UseStaticFiles(); // Обробляє запити до файлів у папці wwwroot
 
 app.MapControllerRoute(
     name: "default",

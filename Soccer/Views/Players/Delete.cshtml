@@ -1,45 +1,52 @@
 ﻿@model Soccer.BLL.DTO.PlayerDTO
 
 @{
-    ViewBag.Title = "Delete";
+    ViewData["Title"] = "Видалення гравця";
 }
 
-<h2>Удаление игрока</h2>
+<h2 class="mt-3 text-danger">Видалення гравця</h2>
 
-<h3>Вы действительно хотите удалить игрока?</h3>
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.Label("Возраст игрока:")
-        </dt>
-        <dd class = "col-sm-10">
-            @(DateTime.Now.Year - Model.BirthYear)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Position)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Position)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Team)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Team)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Удалить" class="btn btn-danger" /> |
-        <a asp-action="Index">К списку игроков</a>
-    </form>
+<div class="alert alert-warning mt-3" role="alert">
+    <h4 class="alert-heading">Ви дійсно хочете видалити цього гравця?</h4>
+    <p class="mb-0">Цю дію неможливо буде скасувати. Дані гравця будуть назавжди видалені з бази даних.</p>
 </div>
 
+<div class="card border-danger mb-4 shadow-sm" style="max-width: 600px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-8 fw-bold">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            
+            <dt class="col-sm-4 text-muted">
+                Вік гравця:
+            </dt>
+            <dd class="col-sm-8">
+                @(DateTime.Now.Year - Model.BirthYear) років
+            </dd>
+            
+            <dt class="col-sm-4 text-muted">
+                @Html.DisplayNameFor(model => model.Position)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Position)
+            </dd>
+            
+            <dt class="col-sm-4 text-muted">
+                @Html.DisplayNameFor(model => model.Team)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Team)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger px-4">Видалити</button>
+    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Скасувати</a>
+</form>

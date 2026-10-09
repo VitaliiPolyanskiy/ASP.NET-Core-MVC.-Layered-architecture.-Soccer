@@ -1,32 +1,38 @@
 ﻿@model Soccer.BLL.DTO.TeamDTO
 
 @{
-    ViewBag.Title = "Delete";
+    ViewData["Title"] = "Видалення клубу";
 }
 
-<h2>Удаление клуба</h2>
+<h2 class="mt-3 text-danger">Видалення клубу</h2>
 
-<h3>Вы действительно хотите удалить клуб?</h3>
-<div>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Coach)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Coach)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Удалить" class="btn btn-danger" /> |
-        <a asp-action="Index">Вернуться к списку клубов</a>
-    </form>
+<div class="alert alert-warning mt-3" role="alert">
+    <h4 class="alert-heading">Ви дійсно хочете видалити цей клуб?</h4>
+    <p class="mb-0">Цю дію неможливо буде скасувати. Усі пов'язані дані можуть бути втрачені.</p>
 </div>
+
+<div class="card border-danger mb-4 shadow-sm" style="max-width: 500px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-8 fw-bold">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            
+            <dt class="col-sm-4 text-muted">
+                @Html.DisplayNameFor(model => model.Coach)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Coach)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger px-4">Видалити</button>
+    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Скасувати</a>
+</form>

@@ -3,119 +3,95 @@ using Soccer.BLL.DTO;
 using Soccer.BLL.Interfaces;
 using Soccer.BLL.Infrastructure;
 
-namespace Soccer.Controllers
+namespace Soccer.Controllers;
+
+public class TeamsController(ITeamService teamService) : Controller
 {
-    public class TeamsController : Controller
+    public async Task<IActionResult> Index()
     {
-        private readonly ITeamService teamService;
+        return View(await teamService.GetTeams());
+    }
 
-        public TeamsController(ITeamService serv)
+    public async Task<IActionResult> Details(int? id)
+    {
+        try
         {
-            teamService = serv;
-        }
+            if (id is null) return NotFound();
 
-        // GET: Teams
-        public async Task<IActionResult> Index()
-        {
-            return View(await teamService.GetTeams());
-        }
-
-        // GET: Teams/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            try
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-                TeamDTO team = await teamService.GetTeam((int)id);
-                return View(team);
-            }
-            catch (ValidationException ex)
-            {
-                return NotFound(ex.Message);
-            }
-        }
-
-        //
-        // GET: /Teams/Create
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Teams/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TeamDTO team)
-        {
-            if (ModelState.IsValid)
-            {
-                await teamService.CreateTeam(team);
-                return View("~/Views/Teams/Index.cshtml", await teamService.GetTeams());
-            }
+            TeamDTO team = await teamService.GetTeam(id.Value);
             return View(team);
         }
-
-        // GET: Teams/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        catch (ValidationException ex)
         {
-            try
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-                TeamDTO team = await teamService.GetTeam((int)id);
-                return View(team);
-            }
-            catch (ValidationException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return NotFound(ex.Message);
         }
+    }
 
-        // POST: Teams/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(TeamDTO team)
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(TeamDTO team)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
-            {
-                await teamService.UpdateTeam(team);
-                return View("~/Views/Teams/Index.cshtml", await teamService.GetTeams());
-            }
+            await teamService.CreateTeam(team);
+            // Використання патерну PRG (Post/Redirect/Get)[cite: 24]
+            return RedirectToAction(nameof(Index));
+        }
+        return View(team);
+    }
+
+    public async Task<IActionResult> Edit(int? id)
+    {
+        try
+        {
+            if (id is null) return NotFound();
+
+            TeamDTO team = await teamService.GetTeam(id.Value);
             return View(team);
         }
-
-        // GET: Teams/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        catch (ValidationException ex)
         {
-            try
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
-                TeamDTO team = await teamService.GetTeam((int)id);
-                return View(team);
-            }
-            catch (ValidationException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            return NotFound(ex.Message);
         }
+    }
 
-        // POST: Teams/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(TeamDTO team)
+    {
+        if (ModelState.IsValid)
         {
-            await teamService.DeleteTeam(id);
-            return View("~/Views/Teams/Index.cshtml", await teamService.GetTeams());
+            await teamService.UpdateTeam(team);
+            return RedirectToAction(nameof(Index));
         }
+        return View(team);
+    }
 
+    public async Task<IActionResult> Delete(int? id)
+    {
+        try
+        {
+            if (id is null) return NotFound();
+
+            TeamDTO team = await teamService.GetTeam(id.Value);
+            return View(team);
+        }
+        catch (ValidationException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        await teamService.DeleteTeam(id);
+        return RedirectToAction(nameof(Index));
     }
 }

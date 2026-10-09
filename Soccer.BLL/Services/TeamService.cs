@@ -5,66 +5,42 @@ using Soccer.BLL.Infrastructure;
 using Soccer.BLL.Interfaces;
 using AutoMapper;
 
-namespace Soccer.BLL.Services
+namespace Soccer.BLL.Services;
+
+public class TeamService(IUnitOfWork database, IMapper mapper) : ITeamService
 {
-    public class TeamService: ITeamService
+    public async Task CreateTeam(TeamDTO teamDto)
     {
-        IUnitOfWork Database { get; set; }
+        var team = new Team { Id = teamDto.Id, Name = teamDto.Name, Coach = teamDto.Coach };
+        await database.Teams.Create(team);
+        await database.Save();
+    }
 
-        public TeamService(IUnitOfWork uow)
-        {
-            Database = uow;
-        }
+    public async Task UpdateTeam(TeamDTO teamDto)
+    {
+        var team = new Team { Id = teamDto.Id, Name = teamDto.Name, Coach = teamDto.Coach };
+        database.Teams.Update(team);
+        await database.Save();
+    }
 
-        public async Task CreateTeam(TeamDTO teamDto)
-        {
-            var team = new Team
-            {
-                Id = teamDto.Id,
-                Name = teamDto.Name,
-                Coach = teamDto.Coach
-            };
-            await Database.Teams.Create(team);
-            await Database.Save();
-        }
+    public async Task DeleteTeam(int id)
+    {
+        await database.Teams.Delete(id);
+        await database.Save();
+    }
 
-        public async Task UpdateTeam(TeamDTO teamDto)
-        {
-            var team = new Team
-            {
-                Id = teamDto.Id,
-                Name = teamDto.Name,
-                Coach = teamDto.Coach
-            };
-            Database.Teams.Update(team);
-            await Database.Save();
-        }
+    public async Task<TeamDTO> GetTeam(int id)
+    {
+        var team = await database.Teams.Get(id);
+        if (team == null)
+            throw new ValidationException("Дані відсутні!", nameof(id));
 
-        public async Task DeleteTeam(int id)
-        {
-            await Database.Teams.Delete(id);
-            await Database.Save();
-        }
+        return mapper.Map<TeamDTO>(team);
+    }
 
-        public async Task<TeamDTO> GetTeam(int id)
-        {
-            var team = await Database.Teams.Get(id);
-            if (team == null)
-                throw new ValidationException("Отсутствуют данные!", "");
-            return new TeamDTO
-            {
-                Id = team.Id,
-                Name = team.Name,
-                Coach = team.Coach
-            };
-        }
-
-        // Automapper позволяет проецировать одну модель на другую, что позволяет сократить объемы кода и упростить программу.
-        public async Task<IEnumerable<TeamDTO>> GetTeams()
-        {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Team, TeamDTO>()).CreateMapper();
-            return mapper.Map<IEnumerable<Team>, IEnumerable<TeamDTO>>(await Database.Teams.GetAll());
-        }
-
+    public async Task<IEnumerable<TeamDTO>> GetTeams()
+    {
+        var teams = await database.Teams.GetAll();
+        return mapper.Map<IEnumerable<TeamDTO>>(teams);
     }
 }

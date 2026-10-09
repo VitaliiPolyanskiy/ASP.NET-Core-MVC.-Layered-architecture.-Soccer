@@ -2,13 +2,10 @@
 using Soccer.DAL.Interfaces;
 using Soccer.DAL.Repositories;
 
-namespace Soccer.BLL.Infrastructure
+namespace Soccer.BLL.Infrastructure;
+
+public static class UnitOfWorkServiceExtensions
 {
-    public static class UnitOfWorkServiceExtensions
-    {
-        public static void AddUnitOfWorkService(this IServiceCollection services)
-        {
-            services.AddScoped<IUnitOfWork, EFUnitOfWork>();
-        }
-    }
+    public static void AddUnitOfWorkService(this IServiceCollection services) =>
+        services.AddScoped<IUnitOfWork, EFUnitOfWork>();
 }

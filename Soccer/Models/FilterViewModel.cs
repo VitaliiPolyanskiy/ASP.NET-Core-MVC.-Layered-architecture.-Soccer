@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Soccer.BLL.DTO;
 
-namespace Soccer.Models
+namespace Soccer.Models;
+
+public class FilterViewModel
 {
-    public class FilterViewModel
+    public FilterViewModel(List<TeamDTO> teams, int team, string position)
     {
-        public FilterViewModel(List<TeamDTO> teams, int team, string position)
-        {
-            // устанавливаем начальный элемент, который позволит выбрать всех
-            teams.Insert(0, new TeamDTO { Name = "All", Id = 0 });
-            Teams = new SelectList(teams, "Id", "Name", team);
-            SelectedTeam = team;
-            SelectedPosition = position;
-        }
-        public SelectList Teams { get; } // список клубов
-        public int SelectedTeam { get; } // выбранный клуб
-        public string SelectedPosition { get; } // введенная позиция
+        // Встановлюємо початковий елемент, який дозволить обрати всіх
+        teams.Insert(0, new TeamDTO { Name = "Усі", Id = 0, Coach = string.Empty });
+        Teams = new SelectList(teams, "Id", "Name", team);
+        SelectedTeam = team;
+        SelectedPosition = position;
     }
+
+    public SelectList Teams { get; } // Список клубів
+    public int SelectedTeam { get; } // Обраний клуб
+    public string SelectedPosition { get; } // Введена позиція
 }

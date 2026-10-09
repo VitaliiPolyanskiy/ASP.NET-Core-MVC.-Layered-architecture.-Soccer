@@ -5,76 +5,56 @@ using Soccer.BLL.Infrastructure;
 using Soccer.BLL.Interfaces;
 using AutoMapper;
 
-namespace Soccer.BLL.Services
+namespace Soccer.BLL.Services;
+
+public class PlayerService(IUnitOfWork database, IMapper mapper) : IPlayerService
 {
-    public class PlayerService : IPlayerService
+    public async Task CreatePlayer(PlayerDTO playerDto)
     {
-        IUnitOfWork Database { get; set; }
-
-        public PlayerService(IUnitOfWork uow)
+        var player = new Player
         {
-            Database = uow;
-        }
+            Id = playerDto.Id,
+            Name = playerDto.Name,
+            BirthYear = playerDto.BirthYear,
+            Position = playerDto.Position,
+            TeamId = playerDto.TeamId
+        };
+        await database.Players.Create(player);
+        await database.Save();
+    }
 
-        public async Task CreatePlayer(PlayerDTO playerDto)
+    public async Task UpdatePlayer(PlayerDTO playerDto)
+    {
+        var player = new Player
         {
-            var player = new Player
-            {
-                Id = playerDto.Id,
-                Name = playerDto.Name,
-                BirthYear = playerDto.BirthYear,
-                Position = playerDto.Position,
-                TeamId = playerDto.TeamId
-            };
-            await Database.Players.Create(player);
-            await Database.Save();
-        }
+            Id = playerDto.Id,
+            Name = playerDto.Name,
+            BirthYear = playerDto.BirthYear,
+            Position = playerDto.Position,
+            TeamId = playerDto.TeamId
+        };
+        database.Players.Update(player);
+        await database.Save();
+    }
 
-        public async Task UpdatePlayer(PlayerDTO playerDto)
-        {
-            var player = new Player
-            {
-                Id = playerDto.Id,
-                Name = playerDto.Name,
-                BirthYear = playerDto.BirthYear,
-                Position = playerDto.Position,
-                TeamId = playerDto.TeamId
-            };
-            Database.Players.Update(player);
-            await Database.Save();
-        }
+    public async Task DeletePlayer(int id)
+    {
+        await database.Players.Delete(id);
+        await database.Save();
+    }
 
-        public async Task DeletePlayer(int id)
-        {
-            await Database.Players.Delete(id);
-            await Database.Save();
-        }
+    public async Task<PlayerDTO> GetPlayer(int id)
+    {
+        var player = await database.Players.Get(id);
+        if (player == null)
+            throw new ValidationException("Дані відсутні!", nameof(id));
 
-        public async Task<PlayerDTO> GetPlayer(int id)
-        {
-            var player = await Database.Players.Get(id);
-            if (player == null)
-                throw new ValidationException("Отсутствуют данные!", "");
-            return new PlayerDTO
-            {
-                Id = player.Id,
-                Name = player.Name,
-                BirthYear = player.BirthYear,
-                Position = player.Position,
-                TeamId = player.TeamId,
-                Team = player.Team?.Name
-            };
-        }
+        return mapper.Map<PlayerDTO>(player);
+    }
 
-        // Automapper позволяет проецировать одну модель на другую, что позволяет сократить объемы кода и упростить программу.
-
-        public async Task<IEnumerable<PlayerDTO>> GetPlayers()
-        {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Player, PlayerDTO>()
-            .ForMember("Team", opt => opt.MapFrom(c => c.Team.Name)));
-            var mapper = new Mapper(config);
-            return mapper.Map<IEnumerable<Player>, IEnumerable<PlayerDTO>>(await Database.Players.GetAll());
-        }
-
+    public async Task<IEnumerable<PlayerDTO>> GetPlayers()
+    {
+        var players = await database.Players.GetAll();
+        return mapper.Map<IEnumerable<PlayerDTO>>(players);
     }
 }

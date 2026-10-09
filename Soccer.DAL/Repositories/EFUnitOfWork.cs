@@ -2,48 +2,21 @@
 using Soccer.DAL.Interfaces;
 using Soccer.DAL.Entities;
 
-namespace Soccer.DAL.Repositories
+namespace Soccer.DAL.Repositories;
+
+/*
+ * Патерн Unit of Work дозволяє спростити роботу з різними репозиторіями 
+ * та гарантує, що всі вони використовуватимуть спільний контекст даних 
+ * для транзакційної цілісності.
+ */
+public class EFUnitOfWork(SoccerContext db) : IUnitOfWork
 {
-    /*
-     * Паттерн Unit of Work позволяет упростить работу с различными репозиториями и дает уверенность, 
-     * что все репозитории будут использовать один и тот же контекст данных.
-    */
+    private PlayerRepository? _playerRepository;
+    private TeamRepository? _teamRepository;
 
-    public class EFUnitOfWork : IUnitOfWork
-    {
-        private SoccerContext db;
-        private PlayerRepository playerRepository;
-        private TeamRepository teamRepository;
+    public IRepository<Team> Teams => _teamRepository ??= new TeamRepository(db);
 
-        public EFUnitOfWork(SoccerContext context)
-        {
-            db = context;
-        }
+    public IRepository<Player> Players => _playerRepository ??= new PlayerRepository(db);
 
-        public IRepository<Team> Teams
-        {
-            get
-            {
-                if (teamRepository == null)
-                    teamRepository = new TeamRepository(db);
-                return teamRepository;
-            }
-        }
-
-        public IRepository<Player> Players
-        {
-            get
-            {
-                if (playerRepository == null)
-                    playerRepository = new PlayerRepository(db);
-                return playerRepository;
-            }
-        }
-
-        public async Task Save()
-        {
-            await db.SaveChangesAsync();
-        }
-       
-    }
+    public async Task Save() => await db.SaveChangesAsync();
 }

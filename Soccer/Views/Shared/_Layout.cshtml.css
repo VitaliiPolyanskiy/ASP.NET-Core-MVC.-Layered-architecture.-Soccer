@@ -1,48 +1,62 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿/* Впровадження CSS-змінних для централізованого управління темами */
+:root {
+    --primary-color: #0077cc;
+    --btn-bg: #1b6ec2;
+    --btn-border: #1861ac;
+    --border-color: #e5e5e5;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+}
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 a {
-  color: #0077cc;
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
+    a:hover {
+        text-decoration: underline;
+    }
+
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: var(--btn-bg);
+    border-color: var(--btn-border);
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: var(--btn-bg);
+    border-color: var(--btn-border);
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid var(--border-color);
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 0.25rem 0.75rem var(--shadow-color);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
+/* 
+   Видалено position: absolute; та bottom: 0; які спричиняли проблеми на мобільних пристроях.
+   Завдяки Flexbox-класам у HTML-макеті, футер позиціонується автоматично та гнучко.
+*/
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }

@@ -1,22 +1,16 @@
 ﻿using Soccer.BLL.DTO;
 
-namespace Soccer.Models
+namespace Soccer.Models;
+
+// Використання первинного конструктора (C# 12) для лаконічної ініціалізації
+public class IndexViewModel(
+    IEnumerable<PlayerDTO> players,
+    PageViewModel pageViewModel,
+    FilterViewModel filterViewModel,
+    SortViewModel sortViewModel)
 {
-    public class IndexViewModel
-    {
-        public IEnumerable<PlayerDTO> Players { get; set; }
-        public PageViewModel PageViewModel { get; }
-        public FilterViewModel FilterViewModel { get; }
-        public SortViewModel SortViewModel { get; }
-
-        public IndexViewModel(IEnumerable<PlayerDTO> players, PageViewModel pageViewModel,
-            FilterViewModel filterViewModel, SortViewModel sortViewModel)
-        {
-            Players = players;
-            PageViewModel = pageViewModel;
-            FilterViewModel = filterViewModel;
-            SortViewModel = sortViewModel;
-        }
-    }
+    public IEnumerable<PlayerDTO> Players { get; } = players;
+    public PageViewModel PageViewModel { get; } = pageViewModel;
+    public FilterViewModel FilterViewModel { get; } = filterViewModel;
+    public SortViewModel SortViewModel { get; } = sortViewModel;
 }
-
