@@ -39,7 +39,6 @@ public class TeamsController(ITeamService teamService) : Controller
         if (ModelState.IsValid)
         {
             await teamService.CreateTeam(team);
-            // Використання патерну PRG (Post/Redirect/Get)[cite: 24]
             return RedirectToAction(nameof(Index));
         }
         return View(team);
